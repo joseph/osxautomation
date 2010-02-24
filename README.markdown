@@ -29,6 +29,38 @@ Run the existing built executable, typing a short message:
 
     $ scripts/run "type foobar"
 
+For general use, move the utility from `build/Release/osxautomation` to
+somewhere in your path (eg `/usr/local/bin`) and run like, eg:
+
+    $ osxautomation "mouselocation"
+
+(This example will print the mouse coordinates.)
+
+You can chain commands with consecutive arguments:
+
+    $ osxautomation "mousemove 300 400" "mouselocation"
+
+
+## Commands
+
+A list of the current input commands:
+
+* `mouselocation` - prints the pixel coordinates of the mouse cursor
+* `mousewarp <x> <y>` - jumps the mouse cursor to these pixel coordinates
+* `mousemove <x> <y>` - steadily moves the mouse cursor to these coordinates
+* `mousedown <integer>` - depresses the mouse button identified by the integer
+* `mouseup <integer>`
+* `mouseclick <integer>`
+* `mousedoubleclick <integer>`
+* `mousetripleclick <integer>`
+* `mousedrag <x> <y>` - depresses the left mouse button (1) and moves the mouse
+    to the given coordinates, then releases the button
+* `press <keycode>` - depresses the keyboard key identified by the keycode
+* `release <keycode>` - releases the key identified by keycode
+* `hit <keycode>` - depresses and releases key
+* `type <string>` - types out a string steadily to whatever has focus
+* `wait <integer>` - pauses execution for <integer> seconds
+
 
 ## A code quality caveat
 
