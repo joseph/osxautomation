@@ -1,0 +1,4 @@
+xcodebuild && \
+  echo "Running..." && \
+  build/Release/osxautomation "$*" && \
+  echo "Completed."
