@@ -136,10 +136,10 @@ void print_msg(const char *msg) {
 /* MOUSE INPUT */
 
 CGPoint mouseLoc() {
-	Point currLoc;
-	GetGlobalMouse(&currLoc);
-	CGPoint cgLoc = {.x = currLoc.h, .y = currLoc.v};
-	return cgLoc;
+  Point currLoc;
+  GetGlobalMouse(&currLoc);
+  CGPoint cgLoc = {.x = currLoc.h, .y = currLoc.v};
+  return cgLoc;
 }
 
 // btn: 0 = none, 1 = left, 2 = right, etc
@@ -178,31 +178,31 @@ CGEventType mouseEventType(int btn, int btnState) {
 }
 
 void mouseEvent(int btn, int btnState, int clickType) {
-	CGPoint currLoc;
-	currLoc = mouseLoc();
+  CGPoint currLoc;
+  currLoc = mouseLoc();
   CGEventType mouseType = mouseEventType(btn, btnState);
 
-  CGMouseButton mb = (btn == LEFT_MOUSE) ? 
-    kCGMouseButtonLeft : 
-    (btn == RIGHT_MOUSE) ? 
-      kCGMouseButtonRight : 
+  CGMouseButton mb = (btn == LEFT_MOUSE) ?
+    kCGMouseButtonLeft :
+    (btn == RIGHT_MOUSE) ?
+      kCGMouseButtonRight :
       kCGMouseButtonCenter;
 
-	CGEventRef theEvent = CGEventCreateMouseEvent(NULL, mouseType, currLoc, mb);
+  CGEventRef theEvent = CGEventCreateMouseEvent(NULL, mouseType, currLoc, mb);
 
   if (clickType) {
     CGEventSetIntegerValueField(theEvent, kCGMouseEventClickState, clickType);
   }
 
-	CGEventPost(kCGHIDEventTap, theEvent);
-	CFRelease(theEvent);	
+  CGEventPost(kCGHIDEventTap, theEvent);
+  CFRelease(theEvent);
 }
 
 /* MOUSE MOVEMENT */
 
 void mouseMove(int posX, int posY) {
-	CGPoint dest = { .x = posX, .y = posY };
-	CGWarpMouseCursorPosition(dest); 
+  CGPoint dest = { .x = posX, .y = posY };
+  CGWarpMouseCursorPosition(dest);
   if (bDragging) {
     mouseEvent(LEFT_MOUSE, MOUSE_DRAGGED, 0);
   } else {
@@ -211,36 +211,36 @@ void mouseMove(int posX, int posY) {
 }
 
 void mouseMoveTo(int posX, int posY, float speed) {
-	CGPoint currLoc = mouseLoc();
-	CGPoint destLoc = { .x = posX, .y = posY };
-	float x = currLoc.x;
-	float y = currLoc.y;
-	float xrat, yrat;
-	
-	int diffX = abs(currLoc.x - destLoc.x);
-	int diffY = abs(currLoc.y - destLoc.y);
-	int dirX = currLoc.x > destLoc.x ? -1 : 1;
-	int dirY = currLoc.y > destLoc.y ? -1 : 1;
+  CGPoint currLoc = mouseLoc();
+  CGPoint destLoc = { .x = posX, .y = posY };
+  float x = currLoc.x;
+  float y = currLoc.y;
+  float xrat, yrat;
+
+  int diffX = abs(currLoc.x - destLoc.x);
+  int diffY = abs(currLoc.y - destLoc.y);
+  int dirX = currLoc.x > destLoc.x ? -1 : 1;
+  int dirY = currLoc.y > destLoc.y ? -1 : 1;
 
   if (diffX == 0 && diffY == 0) {
     return;
   }
 
-	if (diffX > diffY) {
+  if (diffX > diffY) {
     xrat = MOUSE_RESOLUTION * dirX;
     if (diffY == 0) {
       yrat = 0;
     } else {
       yrat = (((float)diffY / diffX) * dirY) * MOUSE_RESOLUTION;
     }
-	} else {
+  } else {
     yrat = MOUSE_RESOLUTION * dirY;
     if (diffX == 0) {
       xrat = 0;
     } else {
       xrat = (((float)diffX / diffY) * dirX) * MOUSE_RESOLUTION;
     }
-	}
+  }
 
   int xArrived = 0, yArrived = 0, diff;
   float accelerant;
@@ -335,7 +335,7 @@ void toKey(CGKeyCode kc, CGEventFlags flags, bool upOrDown) {
     CGEventSetFlags(theEvent, flags);
   }
   CGEventPost(kCGAnnotatedSessionEventTap, theEvent);
-  CFRelease(theEvent);	
+  CFRelease(theEvent);
 }
 
 /*================
@@ -355,7 +355,7 @@ static OSStatus InitAscii2KeyCodeTable(Ascii2KeyCodeTable* ttable) {
 
   // set up our table to all minus ones
   for (i = 0; i < 256; i++)
-          ttable->transtable[i] = -1;
+    ttable->transtable[i] = -1;
 
   // find the current kchr resource ID
   ttable->kchrID = (short)GetScriptVariable(smCurrentScript, smScriptKeys);
@@ -363,7 +363,7 @@ static OSStatus InitAscii2KeyCodeTable(Ascii2KeyCodeTable* ttable) {
   // get the current KCHR resource
   theKCHRRsrc = GetResource('KCHR', ttable->kchrID);
   if (theKCHRRsrc == NULL)
-          return resNotFound;
+    return resNotFound;
   GetResInfo(theKCHRRsrc, &resID, &rType, ttable->KCHRname);
 
   // dereference the resource
@@ -374,11 +374,11 @@ static OSStatus InitAscii2KeyCodeTable(Ascii2KeyCodeTable* ttable) {
 
   // build inverse table by merging all key tables
   for (i = 0; i < count; i++) {
-          ithKeyTable = theCurrentKCHR + kFirstTableOffset + (i * kTableSize);
-          for (j = 0; j < kTableSize; j++) {
-                  if (ttable->transtable[ ithKeyTable[j] ] == -1)
-                          ttable->transtable[ ithKeyTable[j] ] = j;
-          }
+    ithKeyTable = theCurrentKCHR + kFirstTableOffset + (i * kTableSize);
+    for (j = 0; j < kTableSize; j++) {
+      if (ttable->transtable[ ithKeyTable[j] ] == -1)
+        ttable->transtable[ ithKeyTable[j] ] = j;
+    }
   }
 
   return noErr;
@@ -393,7 +393,7 @@ static OSStatus InitAscii2KeyCodeTable(Ascii2KeyCodeTable* ttable) {
 static short AsciiToKeyCode(Ascii2KeyCodeTable* ttable, short asciiCode) {
   if (asciiCode >= 0 && asciiCode <= 255) {
     return ttable->transtable[asciiCode];
-  } else { 
+  } else {
     return false;
   }
 }
